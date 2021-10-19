@@ -1,7 +1,6 @@
 import numpy as np
 import pingouin as pg
 from math import sqrt
-import scipy.stats as stats
 
 def sort_rank(first, second):
     ans = [first, second]
@@ -16,20 +15,8 @@ def get_i(arr):
     return cnt
 
 n = 7
-# data = {0: [31, 21],
-#         1: [82, 55],
-#         2: [25, 8],
-#         3: [26, 27],
-#         4: [53, 32],
-#         5: [30, 42],
-#         6: [29, 26]}
-
 first = [31, 82, 25, 26, 53, 30, 29]
 second = [21, 55, 8, 27, 32, 42, 26]
-
-# n = 10
-# first_i = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-# second_i = [2, 3, 1, 4, 6, 5, 9, 7, 8, 10]
 
 first_i = get_i(first)
 second_i = get_i(second)
@@ -42,7 +29,9 @@ print(f"Выборочный коэффициент ранговой корре�
 tau = 1 - 6/(n**3 - n) * sum([(first_i[i] - second_i[i])**2 for i in range(n)])
 print(f'Выборочный коэффициент ранговой корреляции Спирмэна (с помощью формул): {tau}')
 
-if (abs(tau) * sqrt(n - 2) / sqrt(1 - tau ** 2)) < stats.t.ppf(0.95, n-2):
+tau_max = pg.corr(first_i, second_i, 'two-sided', 'spearman').loc['spearman'].at['p-val']
+
+if (abs(tau) * sqrt(n - 2) / sqrt(1 - tau ** 2)) < tau_max:
     print('Гипотеза об отсутствии корреляционной связи (tau) принимается\n')
 else:
     print('Гипотеза об отсутствии корреляционной связи (tau) отвергается\n')
@@ -52,6 +41,7 @@ tau = pg.corr(first_i, second_i, 'two-sided', 'kendall')
 print(f"Выборочный коэффициент ранговой корреляции Кендалла (с помощью pingouin): {tau.loc['kendall'].at['r']}")
 
 v = np.zeros((n, n))
+
 data = dict(zip(first_i, second_i))
 
 # соответствие ранжировок
@@ -81,9 +71,9 @@ for q in range(n-1):
 tau = 1 - 4 * V / (n * (n-1))
 print(f'Выборочный коэффициент ранговой корреляции Кендалла (с помощью формул): {tau}')
 
-tau_max = None
+tau_max = pg.corr(first_i, second_i, 'two-sided', 'kendall').loc['kendall'].at['p-val']
 
-if (abs(tau) * sqrt(n - 2) / sqrt(1 - tau ** 2)) < stats.t.ppf(0.95, n-2):
+if (abs(tau) * sqrt(n - 2) / sqrt(1 - tau ** 2)) < tau_max:
     print('Гипотеза об отсутствии корреляционной связи (tau) принимается\n')
 else:
     print('Гипотеза об отсутствии корреляционной связи (tau) отвергается\n')
