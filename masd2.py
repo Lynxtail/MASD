@@ -18,9 +18,12 @@ alpha = 0.05
 # С помощью библиотеки
 data = pd.DataFrame(data, columns=['y', 'x1', 'x2'])
 print(data)
-print(f"Частные коэффициенты корреляции (с помощью pingouin):\n"\
-    f"r_12 =\n{pg.partial_corr(data, 'y', 'x1', 'x2')}\n"\
-    f"r_21 =\n{pg.partial_corr(data, 'y', 'x2', 'x1')}")
+
+r_y12 = pg.partial_corr(data, 'y', 'x1', 'x2')
+r_y21 = pg.partial_corr(data, 'y', 'x2', 'x1')
+print(f"\nЧастные коэффициенты корреляции (с помощью pingouin):\n"\
+    f"r_y1,2 = {r_y12.loc['pearson'].at['r']}\t"\
+    f"r_y2,1 = {r_y21.loc['pearson'].at['r']}")
 
 
 # С помощью формул
