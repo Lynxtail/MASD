@@ -17,28 +17,56 @@ def get_i(arr):
 n = 7
 first = [31, 82, 25, 26, 53, 30, 29]
 second = [21, 55, 8, 27, 32, 42, 26]
-
+alpha = 0.05
 first_i = get_i(first)
 second_i = get_i(second)
 print(first, first_i, '', second, second_i, '\n', sep='\n')
 
 # коэффициент Спирмэна
 tau = pg.corr(first_i, second_i, 'two-sided', 'spearman')
+print(tau, '\n')
 print(f"Выборочный коэффициент ранговой корреляции Спирмэна (с помощью pingouin): {tau.loc['spearman'].at['r']}")
+p_val = tau.loc['spearman'].at['p-val']
 
 tau = 1 - 6/(n**3 - n) * sum([(first_i[i] - second_i[i])**2 for i in range(n)])
 print(f'Выборочный коэффициент ранговой корреляции Спирмэна (с помощью формул): {tau}')
 
-tau_max = pg.corr(first_i, second_i, 'two-sided', 'spearman').loc['spearman'].at['p-val']
-
-if (abs(tau) * sqrt(n - 2) / sqrt(1 - tau ** 2)) < tau_max:
-    print('Гипотеза об отсутствии корреляционной связи (tau) принимается\n')
+# при альфа = 0.05
+if alpha < p_val:
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) принимается при уровне значимости alpha = {alpha} (с помощью pingouin)\n')
 else:
-    print('Гипотеза об отсутствии корреляционной связи (tau) отвергается\n')
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) отвергается при уровне значимости alpha = {alpha} (с помощью pingouin)\n')
+
+# S_c (n,Q) ~ 100
+tau_max = 2 * 100 / 112 - 1
+print(f'tau_max = {tau_max}')
+if tau_max > tau:
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) принимается при уровне значимости alpha = {alpha} (с помощью таблицы)\n')
+else:
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) отвергается при уровне значимости alpha = {alpha} (с помощью таблицы)\n')
+
+# при альфа = 0.1
+alpha = 0.1
+# p_val = pg.corr(first_i, second_i, 'two-sided', 'spearman').loc['spearman'].at['p-val']
+if alpha < p_val:
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) принимается при уровне значимости alpha = {alpha} (с помощью pingouin)\n')
+else:
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) отвергается при уровне значимости alpha = {alpha} (с помощью pingouin)\n')
+
+# S_c (n,Q) ~ 74?
+tau_max = 2 * 74 / 112 - 1
+print(f'tau_max = {tau_max}')
+if tau_max > tau:
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) принимается при уровне значимости alpha = {alpha} (с помощью таблицы)\n')
+else:
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) отвергается при уровне значимости alpha = {alpha} (с помощью таблицы)\n')
 
 # коэффициент Кендалла
+alpha = 0.05
 tau = pg.corr(first_i, second_i, 'two-sided', 'kendall')
+print(tau, '\n')
 print(f"Выборочный коэффициент ранговой корреляции Кендалла (с помощью pingouin): {tau.loc['kendall'].at['r']}")
+p_val = tau.loc['kendall'].at['p-val']
 
 v = np.zeros((n, n))
 
@@ -71,9 +99,32 @@ for q in range(n-1):
 tau = 1 - 4 * V / (n * (n-1))
 print(f'Выборочный коэффициент ранговой корреляции Кендалла (с помощью формул): {tau}')
 
-tau_max = pg.corr(first_i, second_i, 'two-sided', 'kendall').loc['kendall'].at['p-val']
-
-if (abs(tau) * sqrt(n - 2) / sqrt(1 - tau ** 2)) < tau_max:
-    print('Гипотеза об отсутствии корреляционной связи (tau) принимается\n')
+if alpha < p_val:
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) принимается при уровне значимости alpha = {alpha} (с помощью pingouin)\n')
 else:
-    print('Гипотеза об отсутствии корреляционной связи (tau) отвергается\n')
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) отвергается при уровне значимости alpha = {alpha} (с помощью pingouin)\n')
+
+# S_k (n, Q) ~ 14
+tau_max = 2 * 14 / (n * (n - 1))
+print(f'tau_max = {tau_max}')
+if tau_max > tau:
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) принимается при уровне значимости alpha = {alpha} (с помощью таблицы)\n')
+else:
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) отвергается при уровне значимости alpha = {alpha} (с помощью таблицы)\n')
+
+# при альфа = 0.1
+alpha = 0.1
+print(p_val,'\n', alpha)
+# p_val = pg.corr(first_i, second_i, 'two-sided', 'kendall').loc['kendall'].at['p-val']
+if alpha < p_val:
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) принимается при уровне значимости alpha = {alpha} (с помощью pingouin)\n')
+else:
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) отвергается при уровне значимости alpha = {alpha} (с помощью pingouin)\n')
+
+# S_k (n,Q) ~ 1?
+tau_max = 2 * 1 / (n * (n - 1))
+print(f'tau_max = {tau_max}')
+if tau_max > tau:
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) принимается при уровне значимости alpha = {alpha} (с помощью таблицы)\n')
+else:
+    print(f'Гипотеза об отсутствии корреляционной связи (tau) отвергается при уровне значимости alpha = {alpha} (с помощью таблицы)\n')
