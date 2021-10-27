@@ -39,7 +39,7 @@ beta_2 (с помощью pingouin) = {pg.linear_regression(x, y).loc[2].at['coe
 
 print(f'\nОценка уравнения регрессии:\n\
 y = {beta0:.2f} + {beta1:.2f}x^(1) + {beta2:.2f}x^(2)')
-[print(f'{beta0 + beta1 * x[i][1] + beta2 * x[i][2]:.2f} = {beta0:.2f} + {beta1:.2f} * {x[i][1]} + {beta2:.2f} * {x[i][2]}, остаток {y[i] - (beta0 + beta1 * x[i][1]) + beta2 * x[i][2]:.2f}')
+[print(f'{beta0 + beta1 * x[i][1] + beta2 * x[i][2]:.2f} = {beta0:.2f} + {beta1:.2f} * {x[i][1]} + {beta2:.2f} * {x[i][2]}, остаток {y[i] - (beta0 + beta1 * x[i][1] + beta2 * x[i][2]):.2f}')
 for i in range(n)]
 
 # косяки с транспонированием
